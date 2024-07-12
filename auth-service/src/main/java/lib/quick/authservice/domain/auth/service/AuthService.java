@@ -8,7 +8,6 @@ import lib.quick.authservice.domain.member.entity.Member;
 import lib.quick.authservice.domain.member.entity.Role;
 import lib.quick.authservice.domain.member.repository.MemberRepository;
 import lib.quick.authservice.global.exception.HttpException;
-import lib.quick.authservice.global.exception.MemberNotFoundException;
 import lib.quick.authservice.global.security.dto.TokenType;
 import lib.quick.authservice.global.security.jwt.JwtProvider;
 import lib.quick.authservice.global.util.MemberUtil;
@@ -46,7 +45,7 @@ public class AuthService {
 
     public UserLoginResponse loginMember(UserLoginRequest userLoginRequest){
         Member member = memberRepository.findByEmail(userLoginRequest.getEmail())
-            .orElseThrow(MemberNotFoundException::new);
+            .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."));
 
         if(!passwordEncoder.matches(userLoginRequest.getPassword(), member.getPassword())){
             throw new HttpException(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
