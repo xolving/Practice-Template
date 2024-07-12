@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: auth-service
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        use_sql_comments: true
+        show_sql: true
+
+  jwt:
+    access-key: dsaj2fegy2g8f79yg2yiufgh2gtgf92tg9fe892ygfug2fe897gyf2897fgte2gyug2uygtfuytg2g7gtf2gyfue2vh
+    refresh-key: sadfhsiuahfduihaausdfhdosfahjfhdvlahkvadshvodauhvviohoaishvsoiauvhaosivhusaoivhdaoiuhvoaihh
+    access-expired: 3600000
+    refresh-expired: 172800000
