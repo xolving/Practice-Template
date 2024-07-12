@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class MemberDetailsService implements UserDetailsService {
@@ -16,7 +18,7 @@ public class MemberDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         return new MemberDetails(
-            memberRepository.findById(Long.parseLong(id)).orElseThrow(MemberNotFoundException::new)
+            memberRepository.findById(UUID.fromString(id)).orElseThrow(MemberNotFoundException::new)
         );
     }
 }

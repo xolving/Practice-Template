@@ -1,8 +1,10 @@
 package lib.quick.authservice.domain.auth.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lib.quick.authservice.domain.auth.controller.dto.request.UserJoinRequest;
 import lib.quick.authservice.domain.auth.controller.dto.request.UserLoginRequest;
+import lib.quick.authservice.domain.auth.controller.dto.response.RefreshTokenResponse;
 import lib.quick.authservice.domain.auth.controller.dto.response.UserLoginResponse;
 import lib.quick.authservice.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +29,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponse> loginMember(@RequestBody @Valid UserLoginRequest userLoginRequest){
         return ResponseEntity.ok(authService.loginMember(userLoginRequest));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenResponse> refreshToken(HttpServletRequest request){
+        String accessToken = request.getHeader("Access-Token");
+        String refreshToken = request.getHeader("Refresh-Token");
+
+        return ResponseEntity.ok(authService.refreshToken(accessToken, refreshToken));
     }
 }

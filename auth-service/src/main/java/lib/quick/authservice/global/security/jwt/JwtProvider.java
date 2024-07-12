@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lib.quick.authservice.domain.auth.controller.dto.response.UserLoginResponse;
 import lib.quick.authservice.global.exception.HttpException;
+import lib.quick.authservice.global.security.dto.TokenType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -33,14 +35,16 @@ public class JwtProvider {
     @Value("${spring.jwt.refresh-expired}")
     public Long refreshExp;
 
-    public UserLoginResponse generateTokenSet(Long id){
+    public UserLoginResponse generateTokenSet(UUID id){
         return new UserLoginResponse(
-            generateAccessToken(id),
-            generateRefreshToken(id)
+            generateToken(id, TokenType.ACCESS_TOKEN),
+            generateToken(id, TokenType.REFRESH_TOKEN)
         );
     }
 
-    private String generateAccessToken(Long id) {
+    public String generateToken(UUID id, TokenType tokenType) {
+        Long expired = tokenType == TokenType.ACCESS_TOKEN ? accessExp : refreshExp;
+
         byte[] keyBytes = Base64.getEncoder().encode(accessKey.getBytes());
         SecretKey signingKey = Keys.hmacShaKeyFor(keyBytes);
 
@@ -48,18 +52,7 @@ public class JwtProvider {
             .signWith(signingKey)
             .subject(String.valueOf(id))
             .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + accessExp))
-            .compact();
-    }
-
-    private String generateRefreshToken(Long id) {
-        byte[] keyBytes = Base64.getEncoder().encode(refreshKey.getBytes());
-        SecretKey signingKey = Keys.hmacShaKeyFor(keyBytes);
-
-        return Jwts.builder().signWith(signingKey)
-            .subject(String.valueOf(id))
-            .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + refreshExp))
+            .expiration(new Date(System.currentTimeMillis() + expired))
             .compact();
     }
 
@@ -72,7 +65,7 @@ public class JwtProvider {
         return getClaims(subject).getSubject();
     }
 
-    private Claims getClaims(String token) {
+    public Claims getClaims(String token) {
         byte[] keyBytes = Base64.getEncoder().encode(accessKey.getBytes());
         SecretKey signingKey = Keys.hmacShaKeyFor(keyBytes);
 
@@ -93,5 +86,18 @@ public class JwtProvider {
         } catch (RuntimeException e) {
             throw new HttpException(HttpStatus.FORBIDDEN, "알 수 없는 토큰입니다.");
         }
+    }
+
+    public Boolean validateToken(String token){
+        byte[] keyBytes = Base64.getEncoder().encode(accessKey.getBytes());
+        SecretKey signingKey = Keys.hmacShaKeyFor(keyBytes);
+
+        return Jwts.parser()
+            .verifyWith(signingKey)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .getExpiration()
+            .before(new Date());
     }
 }
