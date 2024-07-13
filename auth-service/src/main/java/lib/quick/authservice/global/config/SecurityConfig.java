@@ -1,5 +1,7 @@
 package lib.quick.authservice.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lib.quick.authservice.global.security.handler.CustomAccessDeniedHandler;
 import org.springframework.web.cors.*;
 import lib.quick.authservice.global.security.filter.*;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,13 +34,17 @@ public class SecurityConfig {
             .authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                     .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/user/**").hasRole("MEMBER")
                     .anyRequest().authenticated()
             )
             .sessionManagement((sessionManagement) ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(jwtExceptionFilter, JwtFilter.class);
+            .addFilterBefore(jwtExceptionFilter, JwtFilter.class)
+            .exceptionHandling(handlingConfigurer ->
+                handlingConfigurer.accessDeniedHandler(new CustomAccessDeniedHandler(objectMapper))
+            );
 
         return http.build();
     }

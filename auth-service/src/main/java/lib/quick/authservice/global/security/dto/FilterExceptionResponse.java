@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FilterExceptionResponse {
-    private String reason;
+    Integer status;
+    String message;
 }
