@@ -19,7 +19,7 @@ spring:
         show_sql: true
 
   jwt:
-    access-key: dsaj2fegy2g8f79yg2yiufgh2gtgf92tg9fe892ygfug2fe897gyf2897fgte2gyug2uygtfuytg2g7gtf2gyfue2vh
-    refresh-key: sadfhsiuahfduihaausdfhdosfahjfhdvlahkvadshvodauhvviohoaishvsoiauvhaosivhusaoivhdaoiuhvoaihh
+    access-key: ${ACCESS_KEY}
+    refresh-key: ${REFRESH_KEY}
     access-expired: 3600000
     refresh-expired: 172800000
