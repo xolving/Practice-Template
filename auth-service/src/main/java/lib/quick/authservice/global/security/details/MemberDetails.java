@@ -18,7 +18,6 @@ public class MemberDetails implements UserDetails {
     }
 
     @Override
-    @Deprecated
     public String getPassword() {
         return null;
     }
