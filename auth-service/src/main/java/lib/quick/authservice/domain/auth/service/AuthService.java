@@ -34,7 +34,7 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(userJoinRequest.getPassword());
         Member member = Member.builder()
-            .id(null)
+            .id(UUID.randomUUID())
             .email(userJoinRequest.getEmail())
             .password(encodedPassword)
             .role(Role.ROLE_USER)
