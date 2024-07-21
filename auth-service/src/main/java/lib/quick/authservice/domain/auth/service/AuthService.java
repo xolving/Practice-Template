@@ -37,7 +37,7 @@ public class AuthService {
             .id(null)
             .email(userJoinRequest.getEmail())
             .password(encodedPassword)
-            .roles(List.of(Role.ROLE_MEMBER))
+            .role(Role.ROLE_USER)
             .build();
 
         memberRepository.save(member);

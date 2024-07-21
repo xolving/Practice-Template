@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 public class MemberDetails implements UserDetails {
@@ -13,9 +14,7 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return member.getRoles().stream().map(role ->
-            new SimpleGrantedAuthority(role.getPermission())
-        ).toList();
+        return List.of(new SimpleGrantedAuthority(member.getRole().getName()));
     }
 
     @Override

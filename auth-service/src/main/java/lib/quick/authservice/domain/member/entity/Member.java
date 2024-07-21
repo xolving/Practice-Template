@@ -25,6 +25,5 @@ public class Member {
 
     private String password;
 
-    @Convert(converter = StringListConverter.class)
-    private List<Role> roles;
+    private Role role;
 }
