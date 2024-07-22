@@ -55,6 +55,10 @@ public class AuthService {
     }
 
     public RefreshTokenResponse refreshToken(String accessToken, String refreshToken){
+        if(accessToken == null || refreshToken == null){
+            throw new HttpException(HttpStatus.UNAUTHORIZED, "엑세스 토큰 또는 리프레시 토큰을 보내지 않았습니다.");
+        }
+
         accessToken = accessToken.substring(7);
         refreshToken = refreshToken.substring(7);
 

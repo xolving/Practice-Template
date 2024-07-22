@@ -33,7 +33,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<RefreshTokenResponse> refreshToken(HttpServletRequest request){
-        String accessToken = request.getHeader("Access-Token");
+        String accessToken = request.getHeader("Authorization");
         String refreshToken = request.getHeader("Refresh-Token");
 
         return ResponseEntity.ok(authService.refreshToken(accessToken, refreshToken));
