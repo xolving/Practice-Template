@@ -39,10 +39,9 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 
     // JWT
-    final String JWT_VERSION = '0.12.6'
-    compileOnly 'io.jsonwebtoken:jjwt-api:' + JWT_VERSION
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:' + JWT_VERSION
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:' + JWT_VERSION
+    compileOnly 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
     // Spring Data JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
