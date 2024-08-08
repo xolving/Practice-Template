@@ -13,6 +13,7 @@ import lib.quick.authservice.domain.user.repository.UserRepository
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional
 
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ class AuthService (
     private val jwtProvider: JwtProvider,
     private val passwordEncoder: PasswordEncoder,
 ){
+    @Transactional
     fun joinMember(userJoinRequest: UserJoinRequest) {
         if(userRepository.existsByEmail(userJoinRequest.email)){
             throw HttpException(HttpStatus.BAD_REQUEST, "이미 해당 이메일을 사용하는 멤버가 존재합니다.")
@@ -38,6 +40,7 @@ class AuthService (
         userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     fun loginMember(userLoginRequest: UserLoginRequest): UserLoginResponse {
         val member = userRepository.findByEmail(userLoginRequest.email)
             .orElseThrow { HttpException(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다.") }
@@ -49,6 +52,7 @@ class AuthService (
         return jwtProvider.generateTokenSet(member.id);
     }
 
+    @Transactional(readOnly = true)
     fun refreshToken(accessToken: String, refreshToken: String): RefreshTokenResponse {
         val validateAccess: Boolean = jwtProvider.validateToken(accessToken.substring(7));
         val validateRefresh: Boolean = jwtProvider.validateToken(refreshToken.substring(7));
